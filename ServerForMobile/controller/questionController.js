@@ -70,9 +70,9 @@ const DeleteQuestion = async (req, res) => {
 const ChooseQuestionFromPackage = async (req,res) => {
     const {
         user : {userId},
-        params : {id_package}
+        params : {id_package,id_question}
     } = req;
-    const data = await Question.findOne({packageId: id_package});
+    const data = await Question.findOne({_id: id_question});
     const question = await Question.create({
         content: data.content,
         packageId: null,

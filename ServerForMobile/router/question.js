@@ -8,7 +8,7 @@ router.get('/:id',auth,GetQuestion);
 router.post('/',auth,CreateQuestion);
 router.patch('/:id',auth,EditQuestion);
 router.delete('/:id',auth,DeleteQuestion);
-router.get('/package_question/:id_package',auth,ChooseQuestionFromPackage);
+router.get('/package_question/:id_package/:id_question',auth,ChooseQuestionFromPackage);
 
 
 module.exports = router;

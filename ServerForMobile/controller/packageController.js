@@ -22,6 +22,7 @@ const DeletePackage = async (req, res, next) => {
     if(!package){
         throw new NotFoundError(`No package with id ${req.params.id}`);
     }
+    const question = await Question.deleteMany({packageId: req.params.id});
     res.status(StatusCodes.OK).send();
 }
 const EditPackage = async (req, res, next) => {
@@ -45,5 +46,8 @@ const CreateQuestionForPackage = async (req, res, next) => {
     })
     res.status(StatusCodes.CREATED).json({question});
 }
-
-module.exports = {GetAllPackage, GetPackage, CreatePackage, DeletePackage, EditPackage,CreateQuestionForPackage}
+const GetQuestionInPackage = async (req, res, next) => {
+    const questions = await Question.find({packageId: req.params.id});
+    res.status(StatusCodes.OK).json({questions});
+}
+module.exports = {GetAllPackage, GetPackage, CreatePackage, DeletePackage, EditPackage,CreateQuestionForPackage,GetQuestionInPackage}
