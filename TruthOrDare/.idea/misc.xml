@@ -3,6 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/drawable/gradient_background.xml" value="0.173" />
+        <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.1705" />
+        <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/drawable/ic_gg.xml" value="0.1705" />
+        <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/drawable/ic_lol.xml" value="0.173" />
+        <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/drawable/light_button_background.xml" value="0.124" />
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/activity_main.xml" value="0.18568840579710144" />
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/fragment_add_player.xml" value="0.21875" />
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/fragment_game.xml" value="0.21875" />
