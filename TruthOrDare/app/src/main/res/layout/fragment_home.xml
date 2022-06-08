@@ -51,6 +51,7 @@
                 android:drawableLeft="@drawable/ic_baseline_play_arrow_24"
                 android:drawableTint="@color/black"
                 android:paddingVertical="10dp"
+                android:background="@android:color/transparent"
                 android:backgroundTint="@color/white"
                 android:elevation="0dp"
                 android:stateListAnimator="@null"

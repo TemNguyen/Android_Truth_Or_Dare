@@ -27,18 +27,24 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        binding.btn1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
-//            }
-//        });
-//        binding.btn2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
+        binding.btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
+            }
+        });
+        binding.btnQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 //                Navigation.findNavController(view).navigate(R.id.loginFragment);
-//            }
-//        });
+            }
+        });
+        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // code login here
+            }
+        });
     }
 
     @Override
