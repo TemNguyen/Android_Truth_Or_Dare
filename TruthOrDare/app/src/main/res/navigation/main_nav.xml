@@ -28,8 +28,8 @@
         android:label="fragment_add_player"
         tools:layout="@layout/fragment_add_player" >
         <action
-            android:id="@+id/action_addPlayerFragment_to_gameFragment"
-            app:destination="@id/gameFragment" />
+            android:id="@+id/action_addPlayerFragment_to_chooseQuestion"
+            app:destination="@id/chooseQuestion" />
     </fragment>
     <fragment
         android:id="@+id/gameDetailFragment"
@@ -44,5 +44,14 @@
         <action
             android:id="@+id/action_gameFragment_to_gameDetailFragment"
             app:destination="@id/gameDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chooseQuestion"
+        android:name="com.jthanh.truthordare.view.ChooseQuestion"
+        android:label="fragment_choose_question"
+        tools:layout="@layout/fragment_choose_question" >
+        <action
+            android:id="@+id/action_chooseQuestion_to_gameFragment"
+            app:destination="@id/gameFragment" />
     </fragment>
 </navigation>

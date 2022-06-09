@@ -69,7 +69,7 @@ public class AddPlayerFragment extends Fragment {
                 }
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("listPlayer", players);
-                Navigation.findNavController(view).navigate(R.id.gameFragment, bundle);
+                Navigation.findNavController(view).navigate(R.id.chooseQuestion, bundle);
             }
         });
     }
