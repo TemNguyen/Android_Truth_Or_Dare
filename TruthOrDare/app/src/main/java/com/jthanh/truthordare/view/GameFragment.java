@@ -13,17 +13,20 @@ import android.view.ViewGroup;
 
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.model.Player;
+import com.jthanh.truthordare.model.QuestionSelect;
 
 import java.util.ArrayList;
 
 public class GameFragment extends Fragment {
     private ArrayList<Player> players;
+    private QuestionSelect question;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             players = (ArrayList<Player>) getArguments().getSerializable("listPlayer");
+            question = (QuestionSelect) getArguments().getSerializable("questionSelect");
         }
     }
 
@@ -32,6 +35,7 @@ public class GameFragment extends Fragment {
         for (Player player : players) {
             Log.d("DEBUG", player.getName());
         }
+        Log.d("DEBUG", question.getName());
         // Handle here
     }
 
