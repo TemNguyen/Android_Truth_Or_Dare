@@ -17,17 +17,19 @@ const Auth = async (req, res) => {
         const keys = Object.keys(users);
         for (let i = 0; i < keys.length; i++) {
             if (users[keys[i]]?.firebaseToken === uid) {
-                return res.status(200).json({ data });
+                return res.status(200).json({data,id:keys[i]});
             }
         }
     }
-    await db.ref("users").push(data, (err) => {
-        if (err) {
-            return res.send(err);
-        }
-        else {
-            return res.status(200).json({ data });
-        }
-    })
+    // const createUser = await db.ref("users").push(data, (err) => {
+    //     if (err) {
+    //         return res.send(err);
+    //     }
+    //     else {
+    //         return res.status(200).json({data});
+    //     }
+    // })
+    const createUser = await db.ref("users").push(data)
+    res.status(200).json({data,id:createUser.key});
 }
 module.exports = { Auth };
