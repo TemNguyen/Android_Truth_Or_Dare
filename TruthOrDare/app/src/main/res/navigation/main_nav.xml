@@ -28,21 +28,21 @@
         android:label="fragment_add_player"
         tools:layout="@layout/fragment_add_player" >
         <action
-            android:id="@+id/action_addPlayerFragment_to_gameFragment2"
-            app:destination="@id/gameFragment2" />
-    </fragment>
-    <fragment
-        android:id="@+id/gameFragment2"
-        android:name="com.jthanh.truthordare.view.GameFragment"
-        android:label="fragment_game"
-        tools:layout="@layout/fragment_game" >
-        <action
-            android:id="@+id/action_gameFragment2_to_gameDetailFragment"
-            app:destination="@id/gameDetailFragment" />
+            android:id="@+id/action_addPlayerFragment_to_gameFragment"
+            app:destination="@id/gameFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameDetailFragment"
         android:name="com.jthanh.truthordare.view.GameDetailFragment"
         android:label="fragment_game_detail"
         tools:layout="@layout/fragment_game_detail" />
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="com.jthanh.truthordare.view.GameFragment"
+        android:label="fragment_game"
+        tools:layout="@layout/fragment_game" >
+        <action
+            android:id="@+id/action_gameFragment_to_gameDetailFragment"
+            app:destination="@id/gameDetailFragment" />
+    </fragment>
 </navigation>
