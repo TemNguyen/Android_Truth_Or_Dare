@@ -109,14 +109,11 @@ public class HomeFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Log.d(TAG, "Login success");
-
                         //get user
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
                         String uid = firebaseUser.getUid();
                         String email = firebaseUser.getEmail();
 
-                        Log.d(TAG, "Login success" + uid + " " + email);
                         System.out.println(uid + " " + email);
 
                         // check is new user or existing
