@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jthanh.truthordare.R;
+import com.jthanh.truthordare.databinding.CustomActionBarBinding;
 import com.jthanh.truthordare.databinding.FragmentAddPlayerBinding;
 import com.jthanh.truthordare.model.Player;
 import com.jthanh.truthordare.viewmodel.AddPlayerAdapter;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 
 public class AddPlayerFragment extends Fragment {
     private FragmentAddPlayerBinding binding;
+    private CustomActionBarBinding actionBarBinding;
     private ArrayList<Player> players;
     private AddPlayerAdapter adapter;
 
@@ -34,6 +37,14 @@ public class AddPlayerFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        actionBarBinding.tvTitle.setText("Thêm người chơi");
+        actionBarBinding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).popBackStack();
+            }
+        });
+
         players = new ArrayList<>();
         players.add(new Player(0, "Thanh"));
         players.add(new Player(1, "Loc"));
@@ -67,6 +78,7 @@ public class AddPlayerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAddPlayerBinding.inflate(inflater, container, false);
+        actionBarBinding = binding.actionBar;
         View view = binding.getRoot();
         return view;
     }

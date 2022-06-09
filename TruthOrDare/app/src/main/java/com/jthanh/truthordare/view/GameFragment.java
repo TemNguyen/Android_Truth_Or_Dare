@@ -23,7 +23,7 @@ public class GameFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            players = (ArrayList<Player>)getArguments().getSerializable("listPlayer");
+            players = (ArrayList<Player>) getArguments().getSerializable("listPlayer");
         }
     }
 
