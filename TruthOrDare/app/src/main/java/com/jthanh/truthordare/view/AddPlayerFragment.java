@@ -48,7 +48,12 @@ public class AddPlayerFragment extends Fragment {
 
         appDatabase = AppDatabase.getInstance(this.getContext());
         databaseDao = appDatabase.databaseDao();
+
         players = new ArrayList<>(databaseDao.getAllPlayer());
+        if (players.size() == 0){
+            players.add(new Player(""));
+            players.add(new Player(""));
+        }
 
         adapter = new AddPlayerAdapter(players);
         binding.rvPlayers.setAdapter(adapter);
@@ -64,11 +69,16 @@ public class AddPlayerFragment extends Fragment {
         binding.btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (players.size() < 2) {
+                    return;
+                }
+
                 for (Player player : players) {
                     if (player.getName().isEmpty()) {
                         return;
                     }
                 }
+                
                 databaseDao.deleteAllPlayer();
                 databaseDao.insertAllPlayer(players);
                 Bundle bundle = new Bundle();
