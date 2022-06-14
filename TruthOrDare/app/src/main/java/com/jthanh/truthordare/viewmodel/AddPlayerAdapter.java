@@ -19,8 +19,8 @@ import java.util.ArrayList;
 public class AddPlayerAdapter extends RecyclerView.Adapter<AddPlayerAdapter.ViewHolder> {
     private ArrayList<Player> players;
 
-    public AddPlayerAdapter(ArrayList<Player> data) {
-        players = data;
+    public AddPlayerAdapter(ArrayList<Player> players) {
+        this.players = players;
     }
 
     @NonNull
@@ -45,6 +45,14 @@ public class AddPlayerAdapter extends RecyclerView.Adapter<AddPlayerAdapter.View
             @Override
             public void afterTextChanged(Editable editable) {
                 players.get(holder.getAdapterPosition()).setName(editable.toString());
+            }
+        });
+
+        holder.binding.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                players.remove(holder.getAdapterPosition());
+                notifyDataSetChanged();
             }
         });
     }

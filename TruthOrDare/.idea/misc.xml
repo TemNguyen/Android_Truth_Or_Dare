@@ -23,9 +23,16 @@
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/fragment_game_detail.xml" value="0.21875" />
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/fragment_home.xml" value="0.21875" />
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/fragment_login.xml" value="0.21875" />
+<<<<<<< HEAD
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/question_select_item.xml" value="0.2341485507246377" />
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/slider_item.xml" value="0.2341485507246377" />
         <entry key="..\:/TruthOrDare/TruthOrDare/app/src/main/res/layout/truth_background.xml" value="0.2341485507246377" />
+=======
+        <entry key="..\:/Workspace/Android_Truth_Or_Dare/TruthOrDare/app/src/main/res/layout/activity_main.xml" value="0.27447916666666666" />
+        <entry key="..\:/Workspace/Android_Truth_Or_Dare/TruthOrDare/app/src/main/res/layout/add_player_item.xml" value="0.1334853090172239" />
+        <entry key="..\:/Workspace/Android_Truth_Or_Dare/TruthOrDare/app/src/main/res/layout/fragment_home.xml" value="0.1334853090172239" />
+        <entry key="..\:/Workspace/Android_Truth_Or_Dare/TruthOrDare/app/src/main/res/layout/fragment_login.xml" value="0.27447916666666666" />
+>>>>>>> 25d3a9e23b727a9b9fc85cd51e45f17f450db017
       </map>
     </option>
   </component>
