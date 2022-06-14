@@ -1,5 +1,7 @@
 package com.jthanh.truthordare.view;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,9 +19,9 @@ import android.widget.ArrayAdapter;
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.CustomActionBarBinding;
 import com.jthanh.truthordare.databinding.FragmentChooseQuestionBinding;
+import com.jthanh.truthordare.helper.QuestionHelper;
 import com.jthanh.truthordare.model.Player;
 import com.jthanh.truthordare.model.QuestionSelect;
-import com.jthanh.truthordare.viewmodel.QuestionSelectAdapter;
 
 import java.util.ArrayList;
 
@@ -29,8 +31,9 @@ public class ChooseQuestion extends Fragment {
 
     private ArrayList<Player> players;
     private ArrayList<QuestionSelect> questionSelects;
-    private QuestionSelectAdapter adapter;
-    private int position;
+    private boolean[] selectedPackage;
+    private ArrayList<Integer> selectedPackageId = new ArrayList<>();
+    private ArrayList<QuestionSelect> packageSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,25 +53,56 @@ public class ChooseQuestion extends Fragment {
             }
         });
 
+        packageSelected = new ArrayList<>();
         questionSelects = new ArrayList<>();
         // handle here
         questionSelects.add(new QuestionSelect(0, "Gói câu hỏi 1"));
         questionSelects.add(new QuestionSelect(1, "Gói câu hỏi 2"));
 
-        adapter = new QuestionSelectAdapter(
-                getContext(),
-                R.layout.question_select_item,
-                questionSelects.toArray(new QuestionSelect[questionSelects.size()]));
-        binding.spnQuestion.setAdapter(adapter);
-        binding.spnQuestion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int index, long id) {
-                position = index;
-            }
+        selectedPackage = new boolean[questionSelects.size()];
 
+        binding.tvSelect.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Chọn gói câu hỏi");
+                builder.setCancelable(false);
+                builder.setMultiChoiceItems(
+                        QuestionHelper.getListQuestion(questionSelects),
+                        selectedPackage,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                                if (b) {
+                                    selectedPackageId.add(i);
+                                } else {
+                                    selectedPackageId.remove(i);
+                                }
+                            }
+                        });
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        StringBuilder stringBuilder = new StringBuilder();
+                        for (int j = 0; j < selectedPackageId.size(); j++) {
+                            stringBuilder.append(QuestionHelper.getListQuestion(questionSelects)[selectedPackageId.get(j)]);
+                            if (j != selectedPackageId.size() - 1) {
+                                stringBuilder.append(", ");
+                            }
+                            packageSelected.add(questionSelects.get(j));
+                        }
+                        binding.tvSelect.setText(stringBuilder.toString());
+                    }
+                });
 
+                builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                builder.show();
             }
         });
 
@@ -77,7 +111,7 @@ public class ChooseQuestion extends Fragment {
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("listPlayer", players);
-                bundle.putSerializable("questionSelect", adapter.getItem(position));
+                bundle.putSerializable("packageSelected", packageSelected);
                 Navigation.findNavController(view).navigate(R.id.gameFragment, bundle);
             }
         });

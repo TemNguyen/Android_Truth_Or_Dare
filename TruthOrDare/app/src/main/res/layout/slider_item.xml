@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/intersection_background"
+    android:weightSum="1">
+    <LinearLayout
+        android:id="@+id/ll_truth"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Truth"
+            android:textSize="50sp"
+            android:textStyle="italic|bold"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:layout_gravity="center_vertical"
+            tools:ignore="RtlCompat" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/paralellogram_shape">
+        <TextView
+            android:id="@+id/tv_player"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Player"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:layout_gravity="center_vertical"
+            tools:ignore="RtlCompat" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_dare"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dare"
+            android:textSize="50sp"
+            android:textStyle="italic|bold"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:layout_gravity="center_vertical"
+            tools:ignore="RtlCompat" />
+    </LinearLayout>
+</LinearLayout>

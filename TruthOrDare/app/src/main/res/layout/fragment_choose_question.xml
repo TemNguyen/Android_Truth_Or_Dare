@@ -24,13 +24,15 @@
             android:orientation="vertical"
             android:layout_gravity="center">
 
-            <Spinner
-                android:id="@+id/spnQuestion"
+            <TextView
+                android:id="@+id/tv_select"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingVertical="25dp"
-                android:spinnerMode="dropdown" />
+                android:hint="Chọn gói câu hỏi"
+                android:textSize="16dp"
+                android:padding="12dp"
+                android:drawablePadding="16dp"
+                android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"

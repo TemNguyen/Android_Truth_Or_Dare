@@ -5,10 +5,12 @@ import java.io.Serializable;
 public class QuestionSelect implements Serializable {
     private int id;
     private String name;
+    private boolean selected;
 
     public QuestionSelect(int id, String name) {
         this.id = id;
         this.name = name;
+        selected = false;
     }
 
     public int getId() {
@@ -25,5 +27,13 @@ public class QuestionSelect implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
