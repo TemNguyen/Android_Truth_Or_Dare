@@ -1,0 +1,27 @@
+{
+  "name": "usefirebasemobile",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-rate-limit": "^6.4.0",
+    "firebase": "^9.8.2",
+    "firebase-admin": "^10.2.0",
+    "helmet": "^5.1.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.16",
+    "swagger-ui-express": "^4.4.0",
+    "xss-clean": "^0.1.1",
+    "yamljs": "^0.3.0"
+  }
+}
