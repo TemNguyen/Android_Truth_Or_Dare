@@ -115,7 +115,6 @@ public class ChooseQuestion extends Fragment {
                 bundle.putSerializable("packageSelected", packageSelected);
                 GameHepler.realItems.clear();
                 GameHepler.realItems.addAll(players);
-                Log.d("DEBUG111", "onClick: " + GameHepler.realItems.size());
                 Navigation.findNavController(view).navigate(R.id.gameFragment, bundle);
             }
         });

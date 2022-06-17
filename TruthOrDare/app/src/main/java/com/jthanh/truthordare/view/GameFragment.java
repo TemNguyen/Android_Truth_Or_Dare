@@ -32,38 +32,32 @@ public class GameFragment extends Fragment {
     private int selected = 0; // Số thứ tự của item cần chọn
     private int length = 0; // Độ dài ban đầu của mảng item
 
-    private boolean status = false;
-    private SliderAdapter sliderAdapter;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             players = (ArrayList<Player>) getArguments().getSerializable("listPlayer");
             packageSelected = (ArrayList<QuestionSelect>) getArguments().getSerializable("packageSelected");
-            status = getArguments().getBoolean("status");
         }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        for (Player player : players) {
-            Log.d("DEBUG log players", player.getName());
-        }
-
-        for (QuestionSelect question : packageSelected) {
-            Log.d("DEBUG", question.getName());
-        }
-
         if (GameHepler.flag == true) {
             players.clear();
             players.addAll(GameHepler.realItems);
             GameHepler.flag = false;
         }
+
+        for (Player player : players) {
+            Log.d("DEBUG log players", player.getName());
+        }
+        for (QuestionSelect question : packageSelected) {
+            Log.d("DEBUG", question.getName());
+        }
+
         length = players.size();
-        sliderAdapter = new SliderAdapter(players, binding.vpSlider);
-        binding.vpSlider.setAdapter(sliderAdapter);
-        Log.d("DEBUG", "set adapter: " + sliderAdapter.getItemCount());
+        binding.vpSlider.setAdapter(new SliderAdapter(players, binding.vpSlider));
         binding.vpSlider.setClipToPadding(false);
         binding.vpSlider.setClipChildren(false);
         binding.vpSlider.setOffscreenPageLimit(3);
@@ -72,13 +66,15 @@ public class GameFragment extends Fragment {
         binding.btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // handle random selected player
+
+                // handle spin
                 binding.clMain.setVisibility(View.GONE);
                 sliderHandler.postDelayed(sliderRunnable, 100);
                 binding.vpSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                     @Override
                     public void onPageSelected(int position) {
                         super.onPageSelected(position);
-                        Log.d("DEBUG", "onPageSelected: " + position);
                         sliderHandler.removeCallbacks(sliderRunnable);
                         if (position == selected + (times - 1) * length) {
                             GameHepler.flag = true;
