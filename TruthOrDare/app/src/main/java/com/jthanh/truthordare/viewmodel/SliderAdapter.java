@@ -1,14 +1,17 @@
 package com.jthanh.truthordare.viewmodel;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.SliderItemBinding;
 import com.jthanh.truthordare.model.Player;
 
@@ -40,13 +43,19 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
         holder.binding.llTruth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("DEBUG0", "onClick: truth");
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("player", sliderItems.get(holder.getAdapterPosition()));
+                bundle.putSerializable("type", "truth");
+                Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);
             }
         });
         holder.binding.llDare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("DEBUG0", "onClick: dare");
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("player", sliderItems.get(holder.getAdapterPosition()));
+                bundle.putSerializable("type", "dare");
+                Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);
             }
         });
     }
