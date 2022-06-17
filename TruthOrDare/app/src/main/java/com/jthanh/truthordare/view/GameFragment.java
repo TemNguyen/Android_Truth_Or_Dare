@@ -1,31 +1,35 @@
 package com.jthanh.truthordare.view;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jthanh.truthordare.R;
-import com.jthanh.truthordare.databinding.CustomActionBarBinding;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.jthanh.truthordare.databinding.FragmentGameBinding;
 import com.jthanh.truthordare.model.Player;
 import com.jthanh.truthordare.model.QuestionSelect;
+import com.jthanh.truthordare.viewmodel.SliderAdapter;
 
 import java.util.ArrayList;
 
 public class GameFragment extends Fragment {
     private FragmentGameBinding binding;
-    private CustomActionBarBinding actionBarBinding;
+    private Handler sliderHandler = new Handler();
 
     private ArrayList<Player> players;
     private ArrayList<QuestionSelect> packageSelected;
+
+    private int times = 3; // Số vòng quay qua vị trí cần chọn
+    private int selected = 0; // Số thứ tự của item cần chọn
+    private int length = 0; // Độ dài ban đầu của mảng item
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,16 +49,46 @@ public class GameFragment extends Fragment {
         for (QuestionSelect question : packageSelected) {
             Log.d("DEBUG", question.getName());
         }
-        // Handle here
 
+        length = players.size();
+        binding.vpSlider.setAdapter(new SliderAdapter(players, binding.vpSlider));
+        binding.vpSlider.setClipToPadding(false);
+        binding.vpSlider.setClipChildren(false);
+        binding.vpSlider.setOffscreenPageLimit(3);
+        binding.vpSlider.getChildAt(0).setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
 
+        binding.btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.clMain.setVisibility(View.GONE);
+                sliderHandler.postDelayed(sliderRunnable, 100);
+                binding.vpSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        super.onPageSelected(position);
+                        Log.d("DEBUG", "onPageSelected: " + position);
+                        sliderHandler.removeCallbacks(sliderRunnable);
+                        if (position == selected + (times - 1) * length) {
+                            return;
+                        }
+                        sliderHandler.postDelayed(sliderRunnable, 100);
+                    }
+                });
+            }
+        });
     }
+
+    private Runnable sliderRunnable = new Runnable() {
+        @Override
+        public void run() {
+            binding.vpSlider.setCurrentItem(binding.vpSlider.getCurrentItem() + 1);
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentGameBinding.inflate(inflater, container, false);
-//        actionBarBinding = binding.actionBar;
         View view = binding.getRoot();
         return view;
     }
