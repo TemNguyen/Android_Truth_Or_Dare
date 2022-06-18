@@ -1,7 +1,6 @@
 package com.jthanh.truthordare.viewmodel;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.SliderItemBinding;
-import com.jthanh.truthordare.model.Player;
+import com.jthanh.truthordare.model.entities.Player;
 
 import java.util.ArrayList;
 

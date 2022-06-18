@@ -57,6 +57,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
         binding.btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

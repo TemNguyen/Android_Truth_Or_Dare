@@ -9,20 +9,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.CustomActionBarBinding;
 import com.jthanh.truthordare.databinding.FragmentChooseQuestionBinding;
 import com.jthanh.truthordare.helper.GameHepler;
 import com.jthanh.truthordare.helper.QuestionHelper;
-import com.jthanh.truthordare.model.Player;
-import com.jthanh.truthordare.model.QuestionSelect;
+import com.jthanh.truthordare.model.entities.Player;
+import com.jthanh.truthordare.model.entities.QuestionSelect;
 
 import java.util.ArrayList;
 

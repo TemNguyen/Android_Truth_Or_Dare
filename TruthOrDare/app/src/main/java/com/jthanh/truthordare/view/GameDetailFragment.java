@@ -1,22 +1,17 @@
 package com.jthanh.truthordare.view;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.FragmentGameDetailBinding;
-import com.jthanh.truthordare.model.Player;
+import com.jthanh.truthordare.model.entities.Player;
 
 public class GameDetailFragment extends Fragment {
     private FragmentGameDetailBinding binding;

@@ -15,8 +15,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.jthanh.truthordare.databinding.FragmentGameBinding;
 import com.jthanh.truthordare.helper.GameHepler;
-import com.jthanh.truthordare.model.Player;
-import com.jthanh.truthordare.model.QuestionSelect;
+import com.jthanh.truthordare.model.entities.Player;
+import com.jthanh.truthordare.model.entities.QuestionSelect;
 import com.jthanh.truthordare.viewmodel.SliderAdapter;
 
 import java.util.ArrayList;

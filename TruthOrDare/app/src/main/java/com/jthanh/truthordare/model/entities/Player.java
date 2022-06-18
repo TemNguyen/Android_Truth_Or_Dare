@@ -1,4 +1,4 @@
-package com.jthanh.truthordare.model;
+package com.jthanh.truthordare.model.entities;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

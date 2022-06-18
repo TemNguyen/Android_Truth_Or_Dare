@@ -1,6 +1,6 @@
 package com.jthanh.truthordare.helper;
 
-import com.jthanh.truthordare.model.Player;
+import com.jthanh.truthordare.model.entities.Player;
 
 import java.util.ArrayList;
 
