@@ -1,6 +1,6 @@
 package com.jthanh.truthordare.helper;
 
-import com.jthanh.truthordare.model.QuestionSelect;
+import com.jthanh.truthordare.model.entities.QuestionSelect;
 
 import java.util.ArrayList;
 

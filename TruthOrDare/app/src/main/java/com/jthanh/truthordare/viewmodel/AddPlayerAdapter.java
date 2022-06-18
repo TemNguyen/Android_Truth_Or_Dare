@@ -2,7 +2,6 @@ package com.jthanh.truthordare.viewmodel;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.AddPlayerItemBinding;
-import com.jthanh.truthordare.model.Player;
+import com.jthanh.truthordare.model.entities.Player;
 
 import java.util.ArrayList;
 

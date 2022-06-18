@@ -12,11 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jthanh.truthordare.R;
+
 import com.jthanh.truthordare.databinding.CustomActionBarBinding;
 import com.jthanh.truthordare.databinding.FragmentAddPlayerBinding;
-import com.jthanh.truthordare.model.AppDatabase;
-import com.jthanh.truthordare.model.DatabaseDao;
-import com.jthanh.truthordare.model.Player;
+import com.jthanh.truthordare.model.rooms.AppDatabase;
+import com.jthanh.truthordare.model.rooms.PlayerDao;
+import com.jthanh.truthordare.model.entities.Player;
 import com.jthanh.truthordare.viewmodel.AddPlayerAdapter;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class AddPlayerFragment extends Fragment {
     private ArrayList<Player> players;
     private AddPlayerAdapter adapter;
     private AppDatabase appDatabase;
-    private DatabaseDao databaseDao;
+    private PlayerDao playerDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +48,9 @@ public class AddPlayerFragment extends Fragment {
         });
 
         appDatabase = AppDatabase.getInstance(this.getContext());
-        databaseDao = appDatabase.databaseDao();
+        playerDao = appDatabase.playerDao();
 
-        players = new ArrayList<>(databaseDao.getAllPlayer());
+        players = new ArrayList<>(playerDao.getAllPlayer());
         if (players.size() == 0){
             players.add(new Player(""));
             players.add(new Player(""));
@@ -79,8 +80,8 @@ public class AddPlayerFragment extends Fragment {
                     }
                 }
                 
-                databaseDao.deleteAllPlayer();
-                databaseDao.insertAllPlayer(players);
+                playerDao.deleteAllPlayer();
+                playerDao.insertAllPlayer(players);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("listPlayer", players);
                 Navigation.findNavController(view).navigate(R.id.chooseQuestion, bundle);
