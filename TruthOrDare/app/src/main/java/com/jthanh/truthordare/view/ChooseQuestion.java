@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.CustomActionBarBinding;
 import com.jthanh.truthordare.databinding.FragmentChooseQuestionBinding;
+import com.jthanh.truthordare.helper.GameHepler;
 import com.jthanh.truthordare.helper.QuestionHelper;
 import com.jthanh.truthordare.model.Player;
 import com.jthanh.truthordare.model.QuestionSelect;
@@ -112,6 +113,8 @@ public class ChooseQuestion extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("listPlayer", players);
                 bundle.putSerializable("packageSelected", packageSelected);
+                GameHepler.realItems.clear();
+                GameHepler.realItems.addAll(players);
                 Navigation.findNavController(view).navigate(R.id.gameFragment, bundle);
             }
         });
