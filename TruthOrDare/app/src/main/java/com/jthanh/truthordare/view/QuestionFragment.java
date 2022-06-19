@@ -77,6 +77,7 @@ public class QuestionFragment extends Fragment {
                             public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
                                 if (questionPackages.size() > 0) {
                                     questionPackageDao.deleteAll();
+                                    questionPackageDao.insertAllQuestionPackage(new QuestionPackage("0", "Mặc định"));
                                     for (QuestionPackage item:
                                          questionPackages) {
                                         questionPackageDao.insertAllQuestionPackage(item);
