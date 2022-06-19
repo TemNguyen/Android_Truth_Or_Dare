@@ -26,6 +26,11 @@ public class QuestionPackage implements Serializable {
                 '}';
     }
 
+    public QuestionPackage(@NonNull String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

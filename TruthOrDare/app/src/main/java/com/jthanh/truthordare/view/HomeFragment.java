@@ -101,38 +101,39 @@ public class HomeFragment extends Fragment {
         binding.btnQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (questionPackageDao.getQuestionPackageCount() == 0) {
-                    loadingDialog.startDialog("Đang tải dữ liệu...");
-                    util.getAllPackage()
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeWith(new DisposableSingleObserver<List<QuestionPackage>>() {
-                                @Override
-                                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
-                                    loadingDialog.dismissDialog();
-                                    if (questionPackages.size() != 0) {
-                                        for (QuestionPackage questionPackage:
-                                                questionPackages) {
-                                            questionPackageDao.insertAllQuestionPackage(questionPackage);
-                                        }
-                                    } else {
-                                        notificationDialog = new NotificationDialog(getActivity());
-                                        showMessage("Không có dữ liệu để hiện thị", false);
-                                    }
-                                    Navigation.findNavController(view).navigate(R.id.questionFragment);
-                                }
-
-                                @Override
-                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                                    loadingDialog.dismissDialog();
-                                    notificationDialog = new NotificationDialog(getActivity());
-                                    showMessage("Có lỗi xảy ra", false);
-                                    e.printStackTrace();
-                                }
-                            });
-                } else {
-                    Navigation.findNavController(view).navigate(R.id.questionFragment);
-                }
+                Navigation.findNavController(view).navigate(R.id.questionFragment);
+//                if (questionPackageDao.getQuestionPackageCount() == 0) {
+//                    loadingDialog.startDialog("Đang tải dữ liệu...");
+//                    util.getAllPackage()
+//                            .subscribeOn(Schedulers.newThread())
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribeWith(new DisposableSingleObserver<List<QuestionPackage>>() {
+//                                @Override
+//                                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
+//                                    loadingDialog.dismissDialog();
+//                                    if (questionPackages.size() != 0) {
+//                                        for (QuestionPackage questionPackage:
+//                                                questionPackages) {
+//                                            questionPackageDao.insertAllQuestionPackage(questionPackage);
+//                                        }
+//                                    } else {
+//                                        notificationDialog = new NotificationDialog(getActivity());
+//                                        showMessage("Không có dữ liệu để hiện thị", false);
+//                                    }
+//                                    Navigation.findNavController(view).navigate(R.id.questionFragment);
+//                                }
+//
+//                                @Override
+//                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+//                                    loadingDialog.dismissDialog();
+//                                    notificationDialog = new NotificationDialog(getActivity());
+//                                    showMessage("Có lỗi xảy ra", false);
+//                                    e.printStackTrace();
+//                                }
+//                            });
+//                } else {
+//                    Navigation.findNavController(view).navigate(R.id.questionFragment);
+//                }
 
             }
         });
@@ -195,7 +196,9 @@ public class HomeFragment extends Fragment {
                             Log.d(TAG, "Exist account - pull question");
                         }
                         logined();
-                        Navigation.findNavController(getView()).navigate(R.id.addPlayerFragment);
+                        Navigation.findNavController(getView()).navigate(R.id.homeFragment);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
