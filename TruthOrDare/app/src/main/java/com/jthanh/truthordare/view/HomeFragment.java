@@ -210,23 +210,19 @@ public class HomeFragment extends Fragment {
                                                 }
                                             }
                                             loadingDialog.dismissDialog();
-                                            logined();
-                                            Navigation.findNavController(getView()).navigate(R.id.homeFragment);
-                                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                         }
 
                                         @Override
                                         public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
                                             Log.d(TAG, "Pull question fail");
                                             loadingDialog.dismissDialog();
-                                            logined();
-                                            Navigation.findNavController(getView()).navigate(R.id.homeFragment);
-                                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                                         }
                                     });
                         }
+                        logined();
+                        Navigation.findNavController(getView()).navigate(R.id.homeFragment);
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
