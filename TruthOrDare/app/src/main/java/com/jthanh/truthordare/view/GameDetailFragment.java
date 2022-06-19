@@ -12,11 +12,13 @@ import androidx.fragment.app.Fragment;
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.FragmentGameDetailBinding;
 import com.jthanh.truthordare.model.entities.Player;
+import com.jthanh.truthordare.model.entities.Question;
 
 public class GameDetailFragment extends Fragment {
     private FragmentGameDetailBinding binding;
     private Player player;
     private String type;
+    private Question question;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class GameDetailFragment extends Fragment {
         if (getArguments() != null) {
             player = (Player) getArguments().getSerializable("player");
             type = (String) getArguments().getSerializable("type");
+            question = (Question) getArguments().getSerializable("question");
         }
     }
 
@@ -32,7 +35,7 @@ public class GameDetailFragment extends Fragment {
         int backgroundId = type == "truth" ? R.drawable.truth_background : R.drawable.dare_background;
         binding.llMain.setBackgroundResource(backgroundId);
         binding.tvTitle.setText(type);
-        binding.tvQuestion.setText("Random question in database");
+        binding.tvQuestion.setText(question.getContent());
     }
 
     @Override

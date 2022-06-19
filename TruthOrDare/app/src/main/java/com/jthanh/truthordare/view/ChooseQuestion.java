@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +17,43 @@ import android.view.ViewGroup;
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.CustomActionBarBinding;
 import com.jthanh.truthordare.databinding.FragmentChooseQuestionBinding;
+import com.jthanh.truthordare.dialogs.LoadingDialog;
+import com.jthanh.truthordare.dialogs.NotificationDialog;
 import com.jthanh.truthordare.helper.GameHepler;
 import com.jthanh.truthordare.helper.QuestionHelper;
 import com.jthanh.truthordare.model.entities.Player;
-import com.jthanh.truthordare.model.entities.QuestionSelect;
+import com.jthanh.truthordare.model.entities.PackageSelect;
+import com.jthanh.truthordare.model.entities.Question;
+import com.jthanh.truthordare.model.entities.QuestionPackage;
+import com.jthanh.truthordare.model.retrofits.RetrofitUtil;
+import com.jthanh.truthordare.model.rooms.AppDatabase;
+import com.jthanh.truthordare.model.rooms.QuestionDao;
+import com.jthanh.truthordare.model.rooms.QuestionPackageDao;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ChooseQuestion extends Fragment {
     private FragmentChooseQuestionBinding binding;
     private CustomActionBarBinding actionBarBinding;
 
     private ArrayList<Player> players;
-    private ArrayList<QuestionSelect> questionSelects;
+    private ArrayList<PackageSelect> packageSelects;
     private boolean[] selectedPackage;
-    private ArrayList<Integer> selectedPackageId = new ArrayList<>();
-    private ArrayList<QuestionSelect> packageSelected;
+    private ArrayList<Integer> selectedPackageId;
+    private ArrayList<PackageSelect> packageSelected;
+
+    private RetrofitUtil util;
+    private AppDatabase appDatabase;
+    private QuestionPackageDao questionPackageDao;
+    private QuestionDao questionDao;
+
+    private LoadingDialog loadingDialog;
+    private NotificationDialog notificationDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +65,15 @@ public class ChooseQuestion extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        util = RetrofitUtil.getInstance(getContext());
+        appDatabase = AppDatabase.getInstance(getContext());
+        questionPackageDao = appDatabase.questionPackageDao();
+        questionDao = appDatabase.questionDao();
+
+        loadingDialog = new LoadingDialog(getActivity());
+        notificationDialog = new NotificationDialog(getActivity());
+
         actionBarBinding.tvTitle.setText("Chọn bộ câu hỏi");
         actionBarBinding.btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,12 +83,45 @@ public class ChooseQuestion extends Fragment {
         });
 
         packageSelected = new ArrayList<>();
-        questionSelects = new ArrayList<>();
+        packageSelects = new ArrayList<>();
+        selectedPackageId = new ArrayList<>();
         // handle here
-        questionSelects.add(new QuestionSelect(0, "Gói câu hỏi 1"));
-        questionSelects.add(new QuestionSelect(1, "Gói câu hỏi 2"));
+        for (int i = 0; i < questionPackageDao.getQuestionPackageCount(); i++) {
+            QuestionPackage questionPackage = questionPackageDao.getAllQuestionPackage().get(i);
+            packageSelects.add(new PackageSelect(i, questionPackage));
+            List<Question> questionInPackage = questionDao.getQuestionByPackageId(questionPackage.getId());
+            if (questionInPackage.size() == 0) {
+                loadingDialog.startDialog("Đang tải dữ liệu...");
+                util.getAllQuestionByPackageId(questionPackage.getId())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<List<Question>>() {
+                            @Override
+                            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Question> questions) {
+                                loadingDialog.dismissDialog();
+                                if (questions.size() != 0) {
+                                    for (Question question:
+                                         questions) {
+                                        questionDao.insertAllQuestion(question);
+                                    }
+                                } else {
+                                    notificationDialog = new NotificationDialog(getActivity());
+                                    showMessage("Có lỗi xảy ra.", false);
+                                    Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
+                                }
+                            }
 
-        selectedPackage = new boolean[questionSelects.size()];
+                            @Override
+                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                loadingDialog.dismissDialog();
+                                notificationDialog = new NotificationDialog(getActivity());
+                                showMessage("Có lỗi xảy ra", false);
+                                e.printStackTrace();
+                            }
+                        });
+            }
+        }
+        selectedPackage = new boolean[packageSelects.size()];
 
         binding.tvSelect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +130,7 @@ public class ChooseQuestion extends Fragment {
                 builder.setTitle("Chọn gói câu hỏi");
                 builder.setCancelable(false);
                 builder.setMultiChoiceItems(
-                        QuestionHelper.getListQuestion(questionSelects),
+                        QuestionHelper.getListQuestion(packageSelects),
                         selectedPackage,
                         new DialogInterface.OnMultiChoiceClickListener() {
                             @Override
@@ -83,11 +147,11 @@ public class ChooseQuestion extends Fragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         StringBuilder stringBuilder = new StringBuilder();
                         for (int j = 0; j < selectedPackageId.size(); j++) {
-                            stringBuilder.append(QuestionHelper.getListQuestion(questionSelects)[selectedPackageId.get(j)]);
+                            stringBuilder.append(QuestionHelper.getListQuestion(packageSelects)[selectedPackageId.get(j)]);
                             if (j != selectedPackageId.size() - 1) {
                                 stringBuilder.append(", ");
                             }
-                            packageSelected.add(questionSelects.get(j));
+                            packageSelected.add(packageSelects.get(j));
                         }
                         binding.tvSelect.setText(stringBuilder.toString());
                     }
@@ -107,14 +171,31 @@ public class ChooseQuestion extends Fragment {
         binding.btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("listPlayer", players);
-                bundle.putSerializable("packageSelected", packageSelected);
-                GameHepler.realItems.clear();
-                GameHepler.realItems.addAll(players);
-                Navigation.findNavController(view).navigate(R.id.gameFragment, bundle);
+                if (packageSelected.size() != 0) {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("listPlayer", players);
+                    bundle.putSerializable("packageSelected", packageSelected);
+                    GameHepler.realItems.clear();
+                    GameHepler.realItems.addAll(players);
+                    Navigation.findNavController(view).navigate(R.id.gameFragment, bundle);
+                } else {
+                    notificationDialog = new NotificationDialog(getActivity());
+                    showMessage("Vui lòng chọn gói câu hỏi.", false);
+                }
+
             }
         });
+    }
+
+    private void showMessage(String msg, boolean state) {
+        notificationDialog.startDialog(msg, state);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notificationDialog.dismissDialog();
+            }
+        }, 1000);
     }
 
     @Override

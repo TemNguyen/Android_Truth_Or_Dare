@@ -16,17 +16,20 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.jthanh.truthordare.databinding.FragmentGameBinding;
 import com.jthanh.truthordare.helper.GameHepler;
 import com.jthanh.truthordare.model.entities.Player;
-import com.jthanh.truthordare.model.entities.QuestionSelect;
+import com.jthanh.truthordare.model.entities.PackageSelect;
 import com.jthanh.truthordare.viewmodel.SliderAdapter;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameFragment extends Fragment {
     private FragmentGameBinding binding;
     private Handler sliderHandler = new Handler();
 
     private ArrayList<Player> players;
-    private ArrayList<QuestionSelect> packageSelected;
+    private ArrayList<PackageSelect> packageSelected;
+
+    private Random random;
 
     private int times = 3; // Số vòng quay qua vị trí cần chọn
     private int selected = 0; // Số thứ tự của item cần chọn
@@ -37,7 +40,7 @@ public class GameFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             players = (ArrayList<Player>) getArguments().getSerializable("listPlayer");
-            packageSelected = (ArrayList<QuestionSelect>) getArguments().getSerializable("packageSelected");
+            packageSelected = (ArrayList<PackageSelect>) getArguments().getSerializable("packageSelected");
         }
     }
 
@@ -49,15 +52,8 @@ public class GameFragment extends Fragment {
             GameHepler.flag = false;
         }
 
-        for (Player player : players) {
-            Log.d("DEBUG log players", player.getName());
-        }
-        for (QuestionSelect question : packageSelected) {
-            Log.d("DEBUG", question.getName());
-        }
-
         length = players.size();
-        binding.vpSlider.setAdapter(new SliderAdapter(players, binding.vpSlider));
+        binding.vpSlider.setAdapter(new SliderAdapter(players, binding.vpSlider, packageSelected));
         binding.vpSlider.setClipToPadding(false);
         binding.vpSlider.setClipChildren(false);
         binding.vpSlider.setOffscreenPageLimit(3);
@@ -67,7 +63,8 @@ public class GameFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // handle random selected player
-
+                random = new Random();
+                selected = random.nextInt(length);
                 // handle spin
                 binding.clMain.setVisibility(View.GONE);
                 sliderHandler.postDelayed(sliderRunnable, 100);

@@ -2,31 +2,30 @@ package com.jthanh.truthordare.model.entities;
 
 import java.io.Serializable;
 
-public class QuestionSelect implements Serializable {
+public class PackageSelect implements Serializable {
     private int id;
-    private String name;
+    private QuestionPackage questionPackage;
     private boolean selected;
 
-    public QuestionSelect(int id, String name) {
+    public PackageSelect(int id, QuestionPackage questionPackage) {
         this.id = id;
-        this.name = name;
-        selected = false;
+        this.questionPackage = questionPackage;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public QuestionPackage getQuestionPackage() {
+        return questionPackage;
+    }
+
+    public void setQuestionPackage(QuestionPackage questionPackage) {
+        this.questionPackage = questionPackage;
     }
 
     public boolean isSelected() {

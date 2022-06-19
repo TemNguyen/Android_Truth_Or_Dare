@@ -1,5 +1,6 @@
 package com.jthanh.truthordare.model.retrofits;
 
+import com.jthanh.truthordare.model.entities.Question;
 import com.jthanh.truthordare.model.entities.QuestionPackage;
 
 import java.util.List;
@@ -18,4 +19,7 @@ import retrofit2.http.Query;
 public interface RetrofitService {
     @GET("/package/")
     Single<List<QuestionPackage>> getAllPackage();
+
+    @GET("/package/{packageId}/question/")
+    Single<List<Question>> getAllQuestionByPackageId(@Path("packageId") String packageId);
 }

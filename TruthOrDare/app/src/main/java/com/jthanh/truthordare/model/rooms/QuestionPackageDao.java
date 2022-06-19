@@ -18,6 +18,9 @@ public interface QuestionPackageDao {
     @Query("SELECT * FROM QuestionPackage WHERE id = :id")
     QuestionPackage findQuestionPackageById(String id);
 
+    @Query("SELECT COUNT(id) FROM QuestionPackage")
+    int getQuestionPackageCount();
+
     @Insert
     void insertAllQuestionPackage(QuestionPackage... questionPackages);
 
