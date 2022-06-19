@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
 import android.os.Handler;
@@ -58,6 +59,8 @@ public class HomeFragment extends Fragment {
     private LoadingDialog loadingDialog;
     private NotificationDialog notificationDialog;
 
+    private FirebaseUser firebaseUser;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +80,9 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        if (firebaseUser != null) {
+            logined();
+        }
 
         util = RetrofitUtil.getInstance(getContext());
         appDatabase = AppDatabase.getInstance(getContext());
@@ -113,7 +119,7 @@ public class HomeFragment extends Fragment {
                                         notificationDialog = new NotificationDialog(getActivity());
                                         showMessage("Không có dữ liệu để hiện thị", false);
                                     }
-                                    Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
+                                    Navigation.findNavController(view).navigate(R.id.questionFragment);
                                 }
 
                                 @Override
@@ -125,7 +131,7 @@ public class HomeFragment extends Fragment {
                                 }
                             });
                 } else {
-                    Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
+                    Navigation.findNavController(view).navigate(R.id.questionFragment);
                 }
 
             }
@@ -143,6 +149,12 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private void logined() {
+        binding.btnLogin.setVisibility(View.INVISIBLE);
+        binding.tvName.setVisibility(View.VISIBLE);
+        binding.tvName.setText("Xin chào " + firebaseUser.getDisplayName().split(" ")[0]);
     }
 
     @Override
@@ -170,7 +182,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         //get user
-                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                        firebaseUser = firebaseAuth.getCurrentUser();
                         String uid = firebaseUser.getUid();
                         String email = firebaseUser.getEmail();
 
@@ -182,7 +194,7 @@ public class HomeFragment extends Fragment {
                         } else {
                             Log.d(TAG, "Exist account - pull question");
                         }
-
+                        logined();
                         Navigation.findNavController(getView()).navigate(R.id.addPlayerFragment);
                     }
                 })
@@ -190,7 +202,6 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "Login fail");
-
                     }
                 });
     }
