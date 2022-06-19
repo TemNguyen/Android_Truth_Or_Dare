@@ -2,6 +2,7 @@ package com.jthanh.truthordare.model.retrofits;
 
 import android.content.Context;
 
+import com.jthanh.truthordare.model.entities.Question;
 import com.jthanh.truthordare.model.entities.QuestionPackage;
 
 import java.util.List;
@@ -35,5 +36,9 @@ public class RetrofitUtil {
 
     public Single<List<QuestionPackage>> getAllPackage() {
         return service.getAllPackage();
+    }
+
+    public Single<List<Question>> getAllQuestionByPackageId(String packageId) {
+        return service.getAllQuestionByPackageId(packageId);
     }
 }

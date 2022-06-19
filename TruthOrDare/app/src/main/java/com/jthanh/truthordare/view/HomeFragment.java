@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.FragmentHomeBinding;
+import com.jthanh.truthordare.dialogs.LoadingDialog;
+import com.jthanh.truthordare.dialogs.NotificationDialog;
+import com.jthanh.truthordare.model.entities.QuestionPackage;
+import com.jthanh.truthordare.model.retrofits.RetrofitUtil;
+import com.jthanh.truthordare.model.rooms.AppDatabase;
+import com.jthanh.truthordare.model.rooms.QuestionPackageDao;
+
+import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.observers.DisposableSingleObserver;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
@@ -37,6 +50,13 @@ public class HomeFragment extends Fragment {
 
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth firebaseAuth;
+
+    private RetrofitUtil util;
+    private AppDatabase appDatabase;
+    private QuestionPackageDao questionPackageDao;
+
+    private LoadingDialog loadingDialog;
+    private NotificationDialog notificationDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +78,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
+        util = RetrofitUtil.getInstance(getContext());
+        appDatabase = AppDatabase.getInstance(getContext());
+        questionPackageDao = appDatabase.questionPackageDao();
+
+        loadingDialog = new LoadingDialog(getActivity());
+        notificationDialog = new NotificationDialog(getActivity());
+
         binding.btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,7 +95,39 @@ public class HomeFragment extends Fragment {
         binding.btnQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.loginFragment);
+                if (questionPackageDao.getQuestionPackageCount() == 0) {
+                    loadingDialog.startDialog("Đang tải dữ liệu...");
+                    util.getAllPackage()
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSingleObserver<List<QuestionPackage>>() {
+                                @Override
+                                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
+                                    loadingDialog.dismissDialog();
+                                    if (questionPackages.size() != 0) {
+                                        for (QuestionPackage questionPackage:
+                                                questionPackages) {
+                                            questionPackageDao.insertAllQuestionPackage(questionPackage);
+                                        }
+                                    } else {
+                                        notificationDialog = new NotificationDialog(getActivity());
+                                        showMessage("Không có dữ liệu để hiện thị", false);
+                                    }
+                                    Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
+                                }
+
+                                @Override
+                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                    loadingDialog.dismissDialog();
+                                    notificationDialog = new NotificationDialog(getActivity());
+                                    showMessage("Có lỗi xảy ra", false);
+                                    e.printStackTrace();
+                                }
+                            });
+                } else {
+                    Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
+                }
+
             }
         });
 
@@ -134,6 +193,17 @@ public class HomeFragment extends Fragment {
 
                     }
                 });
+    }
+
+    private void showMessage(String msg, boolean state) {
+        notificationDialog.startDialog(msg, state);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notificationDialog.dismissDialog();
+            }
+        }, 1000);
     }
 
     @Override

@@ -12,17 +12,33 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.SliderItemBinding;
+import com.jthanh.truthordare.model.entities.PackageSelect;
 import com.jthanh.truthordare.model.entities.Player;
+import com.jthanh.truthordare.model.entities.Question;
+import com.jthanh.truthordare.model.entities.QuestionPackage;
+import com.jthanh.truthordare.model.rooms.AppDatabase;
+import com.jthanh.truthordare.model.rooms.QuestionDao;
+import com.jthanh.truthordare.model.rooms.QuestionPackageDao;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderViewHolder> {
     private ArrayList<Player> sliderItems;
     private ViewPager2 viewPager2;
+    private ArrayList<PackageSelect> packageSelected;
+    private ArrayList<Question> listQuestion;
 
-    public SliderAdapter(ArrayList<Player> sliderItems, ViewPager2 viewPager2) {
+    private AppDatabase appDatabase;
+    private QuestionPackageDao questionPackageDao;
+    private QuestionDao questionDao;
+
+    private Random random;
+
+    public SliderAdapter(ArrayList<Player> sliderItems, ViewPager2 viewPager2, ArrayList<PackageSelect> packageSelected) {
         this.sliderItems = sliderItems;
         this.viewPager2 = viewPager2;
+        this.packageSelected = packageSelected;
     }
 
     @NonNull
@@ -35,6 +51,21 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
 
     @Override
     public void onBindViewHolder(@NonNull SliderViewHolder holder, int position) {
+
+        listQuestion = new ArrayList<>();
+        appDatabase = AppDatabase.getInstance(holder.itemView.getContext());
+        questionDao = appDatabase.questionDao();
+        questionPackageDao = appDatabase.questionPackageDao();
+        random = new Random();
+
+        for (PackageSelect selected:
+                packageSelected) {
+            QuestionPackage questionPackage = selected.getQuestionPackage();
+            listQuestion.addAll(questionDao.getQuestionByPackageId(questionPackage.getId()));
+        }
+
+
+
         holder.binding.tvPlayer.setText(sliderItems.get(position).getName());
         if (position == sliderItems.size() - 2) {
             viewPager2.post(runnable);
@@ -43,6 +74,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
+                Question rdQuestion = listQuestion.get(random.nextInt(listQuestion.size()));
+                bundle.putSerializable("question", rdQuestion);
                 bundle.putSerializable("player", sliderItems.get(holder.getAdapterPosition()));
                 bundle.putSerializable("type", "truth");
                 Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);
@@ -52,6 +85,8 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
+                Question rdQuestion = listQuestion.get(random.nextInt(listQuestion.size()));
+                bundle.putSerializable("question", rdQuestion);
                 bundle.putSerializable("player", sliderItems.get(holder.getAdapterPosition()));
                 bundle.putSerializable("type", "dare");
                 Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);

@@ -18,14 +18,17 @@ public interface QuestionDao {
     @Query("SELECT * FROM Question WHERE id = :id")
     Question getQuestionById(String id);
 
+    @Query("SELECT * FROM Question WHERE packageId = :packageId")
+    List<Question> getQuestionByPackageId(String packageId);
+
     @Insert
-    void insertAllUser(Question... questions);
+    void insertAllQuestion(Question... questions);
 
     @Update
-    void updateUser(Question question);
+    void updateQuestion(Question question);
 
     @Delete
-    void DeleteUser(Question question);
+    void DeleteQuestion(Question question);
 
     @Query("DELETE FROM Question")
     void deleteAll();
