@@ -77,7 +77,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 Question rdQuestion = listQuestion.get(random.nextInt(listQuestion.size()));
                 bundle.putSerializable("question", rdQuestion);
                 bundle.putSerializable("player", sliderItems.get(holder.getAdapterPosition()));
-                bundle.putSerializable("type", "truth");
+                bundle.putSerializable("type", "Thật");
                 Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);
             }
         });
@@ -88,7 +88,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                 Question rdQuestion = listQuestion.get(random.nextInt(listQuestion.size()));
                 bundle.putSerializable("question", rdQuestion);
                 bundle.putSerializable("player", sliderItems.get(holder.getAdapterPosition()));
-                bundle.putSerializable("type", "dare");
+                bundle.putSerializable("type", "Thách");
                 Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);
             }
         });

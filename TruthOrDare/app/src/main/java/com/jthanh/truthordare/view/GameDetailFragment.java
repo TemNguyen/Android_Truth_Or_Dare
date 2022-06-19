@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.FragmentGameDetailBinding;
@@ -32,10 +33,16 @@ public class GameDetailFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        int backgroundId = type == "truth" ? R.drawable.truth_background : R.drawable.dare_background;
+        int backgroundId = type == "Thật" ? R.drawable.truth_background : R.drawable.dare_background;
         binding.llMain.setBackgroundResource(backgroundId);
         binding.tvTitle.setText(type);
         binding.tvQuestion.setText(question.getContent());
+        binding.cvNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).popBackStack();
+            }
+        });
     }
 
     @Override
