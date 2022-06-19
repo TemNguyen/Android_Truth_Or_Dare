@@ -33,6 +33,7 @@ import com.jthanh.truthordare.databinding.FragmentHomeBinding;
 import com.jthanh.truthordare.dialogs.LoadingDialog;
 import com.jthanh.truthordare.dialogs.NotificationDialog;
 import com.jthanh.truthordare.model.entities.Question;
+import com.jthanh.truthordare.model.entities.QuestionPackage;
 import com.jthanh.truthordare.model.entities.UserPackage;
 import com.jthanh.truthordare.model.retrofits.RetrofitUtil;
 import com.jthanh.truthordare.model.rooms.AppDatabase;
@@ -94,6 +95,10 @@ public class HomeFragment extends Fragment {
         loadingDialog = new LoadingDialog(getActivity());
         notificationDialog = new NotificationDialog(getActivity());
 
+        if (questionPackageDao.getAllQuestionPackage().size() == 0) {
+            generateDefaultPackage();
+        }
+
         binding.btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,6 +128,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void logined() {
+        binding.btnLogout.setVisibility(View.VISIBLE);
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                firebaseAuth.signOut();
+                binding.btnLogin.setVisibility(View.VISIBLE);
+                binding.tvName.setVisibility(View.INVISIBLE);
+                binding.btnLogout.setVisibility(View.INVISIBLE);
+            }
+        });
         binding.btnLogin.setVisibility(View.INVISIBLE);
         binding.tvName.setVisibility(View.VISIBLE);
         binding.tvName.setText("Xin chào " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName().split(" ")[0]);
@@ -172,24 +187,26 @@ public class HomeFragment extends Fragment {
                                             if (userPackages.size() > 0) {
                                                 for (UserPackage item:
                                                      userPackages) {
-                                                    util.getAllQuestionByPackageId(item.getPackageId())
-                                                            .subscribeOn(Schedulers.newThread())
-                                                            .observeOn(AndroidSchedulers.mainThread())
-                                                            .subscribeWith(new DisposableSingleObserver<List<Question>>() {
-                                                                @Override
-                                                                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Question> questions) {
-                                                                    if (questions.size() > 0) {
-                                                                        for (Question item:
-                                                                                questions) {
-                                                                            questionDao.insertAllQuestion(item);
+                                                    if (questionDao.getQuestionByPackageId(item.getPackageId()).size() == 0) {
+                                                        util.getAllQuestionByPackageId(item.getPackageId())
+                                                                .subscribeOn(Schedulers.newThread())
+                                                                .observeOn(AndroidSchedulers.mainThread())
+                                                                .subscribeWith(new DisposableSingleObserver<List<Question>>() {
+                                                                    @Override
+                                                                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Question> questions) {
+                                                                        if (questions.size() > 0) {
+                                                                            for (Question item:
+                                                                                    questions) {
+                                                                                questionDao.insertAllQuestion(item);
+                                                                            }
                                                                         }
                                                                     }
-                                                                }
 
-                                                                @Override
-                                                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                                                                }
-                                                            });
+                                                                    @Override
+                                                                    public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                                                    }
+                                                                });
+                                                    }
                                                 }
                                             }
                                             loadingDialog.dismissDialog();
@@ -218,6 +235,21 @@ public class HomeFragment extends Fragment {
                         Log.d(TAG, "Login fail");
                     }
                 });
+    }
+
+    private void generateDefaultPackage() {
+        questionPackageDao.insertAllQuestionPackage(new QuestionPackage("0", "Mặc định"));
+        questionDao.insertAllQuestion(
+                new Question("0", "Hát một bài hát.", "dare", "0"),
+                new Question("1", "Vừa chống đẩy vừa hát.", "dare", "0"),
+                new Question("2", "Thời gian lâu nhất không tắm?", "truth", "0"),
+                new Question("3", "Cover 1 trend tiktok.", "dare", "0"),
+                new Question("4", "Cover 1 bài Kpop dance.", "dare", "0"),
+                new Question("5", "Đọc ngược bảng chữ cái tiếng Việt.", "dare", "0"),
+                new Question("6", "Điều gì làm bạn hối hận nhất?", "truth", "0"),
+                new Question("7", "Điều điên rồ nhất đã làm khi say?", "truth", "0"),
+                new Question("8", "Điều trẻ con nhất mà bạn từng làm?", "truth", "0"),
+                new Question("9", "Điều bạn không bao giờ muốn bố mẹ biết?", "truth", "0"));
     }
 
     @Override

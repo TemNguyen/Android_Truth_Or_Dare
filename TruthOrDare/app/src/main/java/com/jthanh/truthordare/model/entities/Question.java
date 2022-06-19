@@ -21,6 +21,13 @@ public class Question implements Serializable {
     @SerializedName("packageId")
     private String packageId;
 
+    public Question(@NonNull String id, String content, String rule, String packageId) {
+        this.id = id;
+        this.content = content;
+        this.rule = rule;
+        this.packageId = packageId;
+    }
+
     @Override
     public String toString() {
         return "Question{" +
