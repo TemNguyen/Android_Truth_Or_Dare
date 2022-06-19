@@ -47,6 +47,8 @@ public class GameFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        binding.vpSlider.setVisibility(View.INVISIBLE);
+        binding.clMain.setVisibility(View.VISIBLE);
         if (GameHepler.flag == true) {
             players.clear();
             players.addAll(GameHepler.realItems);
@@ -63,6 +65,8 @@ public class GameFragment extends Fragment {
         binding.btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                binding.vpSlider.setVisibility(View.VISIBLE);
+                binding.clMain.setVisibility(View.INVISIBLE);
                 // handle random selected player
                 random = new Random();
                 do {
