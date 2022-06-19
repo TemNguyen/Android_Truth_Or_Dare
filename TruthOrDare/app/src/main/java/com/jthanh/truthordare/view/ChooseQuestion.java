@@ -98,7 +98,6 @@ public class ChooseQuestion extends Fragment {
                         .subscribeWith(new DisposableSingleObserver<List<Question>>() {
                             @Override
                             public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Question> questions) {
-                                loadingDialog.dismissDialog();
                                 if (questions.size() != 0) {
                                     for (Question question:
                                          questions) {
@@ -113,12 +112,12 @@ public class ChooseQuestion extends Fragment {
 
                             @Override
                             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                                loadingDialog.dismissDialog();
                                 notificationDialog = new NotificationDialog(getActivity());
                                 showMessage("Có lỗi xảy ra", false);
                                 e.printStackTrace();
                             }
                         });
+                loadingDialog.dismissDialog();
             }
         }
         selectedPackage = new boolean[packageSelects.size()];
@@ -151,7 +150,7 @@ public class ChooseQuestion extends Fragment {
                             if (j != selectedPackageId.size() - 1) {
                                 stringBuilder.append(", ");
                             }
-                            packageSelected.add(packageSelects.get(j));
+                            packageSelected.add(packageSelects.get(selectedPackageId.get(j)));
                         }
                         binding.tvSelect.setText(stringBuilder.toString());
                     }
