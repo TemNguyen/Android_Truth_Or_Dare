@@ -50,7 +50,32 @@ const GetQuestionInPackage = async (req, res, next) => {
                     questionObject.push({
                         id: keys[i],
                         content: questions[keys[i]].content,
-                        userId: questions[keys[i]].userId,
+                        rule: questions[keys[i]].rule,
+                        packageId: questions[keys[i]].packageId
+                    })
+                }
+            }
+        }
+    })
+    res.status(200).json(JSON.parse(JSON.stringify(questionObject)));
+}
+const GetQuestionInPackageFocusRule = async (req, res, next) => {
+    const packageId = req.params.id;
+    const rule = req.params.rule;
+    let questionObject = [];
+    const data = await db.ref("question").once("value", snapshot => {
+        if (snapshot.val() == null) {
+            res.json({ message: "null" });
+        }
+        else {
+            const questions = snapshot.val();
+            const keys = Object.keys(questions);
+            for (let i = 0; i < keys.length; i++) {
+                if (questions[keys[i]].packageId === packageId && questions[keys[i]].rule === rule) {
+                    questionObject.push({
+                        id: keys[i],
+                        content: questions[keys[i]].content,
+                        rule: questions[keys[i]].rule,
                         packageId: questions[keys[i]].packageId
                     })
                 }
@@ -63,6 +88,7 @@ const CreateQuestionForPackage = async (req, res, next) => {
     const data = {
         userId: "null",
         content: req.body.content,
+        rule: req.body.rule,
         packageId: req.params.id
     }
     const question = await db.ref("question").push(data);
@@ -70,6 +96,7 @@ const CreateQuestionForPackage = async (req, res, next) => {
         id: question.key,
         userId: data.userId,
         content: data.content,
+        rule:data.rule,
         packageId: data.packageId
     });
 }
@@ -127,4 +154,4 @@ const DeletePackage = async (req, res, next) => {
     res.status(200).json({ message: "delete success" });
 }
 
-module.exports = { GetAllPackages, GetPackage, GetQuestionInPackage, CreateQuestionForPackage, CreatePackage, EditPackage, DeletePackage }
+module.exports = {GetQuestionInPackageFocusRule,GetAllPackages, GetPackage, GetQuestionInPackage, CreateQuestionForPackage, CreatePackage, EditPackage, DeletePackage }

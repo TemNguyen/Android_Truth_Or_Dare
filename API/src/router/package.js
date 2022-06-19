@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const {GetAllPackages,GetPackage,GetQuestionInPackage,CreateQuestionForPackage,CreatePackage,EditPackage,DeletePackage } = require('../controller/package');
+const {GetQuestionInPackageFocusRule,GetAllPackages,GetPackage,GetQuestionInPackage,CreateQuestionForPackage,CreatePackage,EditPackage,DeletePackage } = require('../controller/package');
 
 router.get('/',GetAllPackages);
 router.get('/:id',GetPackage);
+router.get('/:id/question/:rule',GetQuestionInPackageFocusRule);
 router.get('/:id/question',GetQuestionInPackage);
 router.post('/:id/question/create',CreateQuestionForPackage);
 router.post('/',CreatePackage);

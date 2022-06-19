@@ -9,6 +9,10 @@
     {
       "url": "https://truthordare-game.herokuapp.com",
       "variables": {}
+    },
+    {
+      "url": "http://example.com",
+      "variables": {}
     }
   ],
   "paths": {
@@ -21,7 +25,7 @@
             "type": "string"
           },
           "required": true,
-          "description": "the userid"
+          "description": "userId"
         }
       ],
       "post": {
@@ -39,7 +43,8 @@
                 "$ref": "#/components/schemas/CreateQuestionRequest"
               },
               "example": {
-                "content": "cơ có bồ chưa ? "
+                "content": "thịnh có bồ chưa ? ",
+                "rule": "truth"
               }
             }
           },
@@ -51,7 +56,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       },
       "get": {
         "tags": [
@@ -66,20 +77,17 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     },
-    "/user/{userId}/question/{id_question}": {
+    "/user/question/{id_question}": {
       "parameters": [
-        {
-          "in": "path",
-          "name": "userId",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "userId"
-        },
         {
           "in": "path",
           "name": "id_question",
@@ -87,7 +95,7 @@
             "type": "string"
           },
           "required": true,
-          "description": "questionId"
+          "description": "id_question"
         }
       ],
       "get": {
@@ -103,7 +111,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -120,7 +134,8 @@
                 "$ref": "#/components/schemas/EditQuestionRequest"
               },
               "example": {
-                "content": "thành có thích hân không ? "
+                "content": "thành có thích hân không ? ",
+                "rule": "truth"
               }
             }
           },
@@ -132,8 +147,27 @@
             "headers": {}
           }
         },
-        "deprecated": false
-      },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
+      }
+    },
+    "/user/question/{question_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "question_id",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "question_id"
+        }
+      ],
       "delete": {
         "tags": [
           "Question"
@@ -147,7 +181,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "http://example.com",
+            "variables": {}
+          }
+        ]
       }
     },
     "/user/{userId}/QuestionInPackage/{id_question}": {
@@ -168,7 +208,7 @@
             "type": "string"
           },
           "required": true,
-          "description": "questionId"
+          "description": "id_question"
         }
       ],
       "get": {
@@ -184,7 +224,56 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
+      }
+    },
+    "/user/{userId}/question/{rule}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "userId",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "userId"
+        },
+        {
+          "in": "path",
+          "name": "rule",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "rule"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Question"
+        ],
+        "summary": "GetAllQuestionFocusRule",
+        "operationId": "GetAllQuestionFocusRule",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     },
     "/package": {
@@ -203,7 +292,7 @@
                 "$ref": "#/components/schemas/CreatePackageRequest"
               },
               "example": {
-                "name": "học đường"
+                "name": "18+"
               }
             }
           },
@@ -215,7 +304,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       },
       "get": {
         "tags": [
@@ -230,19 +325,25 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     },
-    "/package/{packageId}": {
+    "/package/{package_id}": {
       "parameters": [
         {
           "in": "path",
-          "name": "packageId",
+          "name": "package_id",
           "schema": {
             "type": "string"
           },
           "required": true,
-          "description": "packageId"
+          "description": "package_id"
         }
       ],
       "get": {
@@ -258,7 +359,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "http://example.com",
+            "variables": {}
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -287,7 +394,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "http://example.com",
+            "variables": {}
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -302,10 +415,16 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     },
-    "/package/{packageId}/question/{id_question}": {
+    "/package/{packageId}/question/create": {
       "parameters": [
         {
           "in": "path",
@@ -315,15 +434,6 @@
           },
           "required": true,
           "description": "packageId"
-        },
-        {
-          "in": "path",
-          "name": "id_question",
-          "schema": {
-            "type": "string"
-          },
-          "required": true,
-          "description": "id_question"
         }
       ],
       "post": {
@@ -341,7 +451,8 @@
                 "$ref": "#/components/schemas/CreateQuestionForPackageRequest"
               },
               "example": {
-                "content": "Bạn và người ấy quen nhau bao lâu rồi"
+                "content": "Bạn đã từng quan hệ với bao nhiêu người?",
+                "rule": "truth"
               }
             }
           },
@@ -353,7 +464,56 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
+      }
+    },
+    "/package/{packageId}/question/{rule}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "packageId",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "packageId"
+        },
+        {
+          "in": "path",
+          "name": "rule",
+          "schema": {
+            "type": "string"
+          },
+          "required": true,
+          "description": "rule"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Package"
+        ],
+        "summary": "Get Question In Package",
+        "operationId": "GetQuestionInPackage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     },
     "/package/{packageId}/question": {
@@ -372,8 +532,8 @@
         "tags": [
           "Package"
         ],
-        "summary": "Get Question In Package",
-        "operationId": "GetQuestionInPackage",
+        "summary": "Get Question In Package Focus Role",
+        "operationId": "GetQuestionInPackageFocusRole",
         "parameters": [],
         "responses": {
           "200": {
@@ -381,7 +541,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     },
     "/user/{userId}/package/{packageId}": {
@@ -405,7 +571,7 @@
           "description": "packageId"
         }
       ],
-      "get": {
+      "post": {
         "tags": [
           "Install"
         ],
@@ -418,7 +584,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     },
     "/user/{userId}/packageinstalled": {
@@ -446,7 +618,13 @@
             "headers": {}
           }
         },
-        "deprecated": false
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://truthordare-game.herokuapp.com",
+            "variables": {}
+          }
+        ]
       }
     }
   },
@@ -455,31 +633,41 @@
       "CreateQuestionRequest": {
         "title": "CreateQuestionRequest",
         "required": [
-          "content"
+          "content",
+          "rule"
         ],
         "type": "object",
         "properties": {
           "content": {
             "type": "string"
+          },
+          "rule": {
+            "type": "string"
           }
         },
         "example": {
-          "content": "cơ có bồ chưa ? "
+          "content": "thịnh có bồ chưa ? ",
+          "rule": "truth"
         }
       },
       "EditQuestionRequest": {
         "title": "EditQuestionRequest",
         "required": [
-          "content"
+          "content",
+          "rule"
         ],
         "type": "object",
         "properties": {
           "content": {
             "type": "string"
+          },
+          "rule": {
+            "type": "string"
           }
         },
         "example": {
-          "content": "thành có thích hân không ? "
+          "content": "thành có thích hân không ? ",
+          "rule": "truth"
         }
       },
       "CreatePackageRequest": {
@@ -494,7 +682,7 @@
           }
         },
         "example": {
-          "name": "học đường"
+          "name": "18+"
         }
       },
       "EditPackageRequest": {
@@ -515,16 +703,21 @@
       "CreateQuestionForPackageRequest": {
         "title": "CreateQuestionForPackageRequest",
         "required": [
-          "content"
+          "content",
+          "rule"
         ],
         "type": "object",
         "properties": {
           "content": {
             "type": "string"
+          },
+          "rule": {
+            "type": "string"
           }
         },
         "example": {
-          "content": "Bạn và người ấy quen nhau bao lâu rồi"
+          "content": "Bạn đã từng quan hệ với bao nhiêu người?",
+          "rule": "truth"
         }
       },
       "DeletePackageRequest": {

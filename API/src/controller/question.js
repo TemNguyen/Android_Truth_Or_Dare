@@ -16,7 +16,7 @@ const GetAllQuestion = async (req, res, next) => {
                         id: keys[i],
                         content: questions[keys[i]].content,
                         userId: questions[keys[i]].userId,
-                        packageId: questions[keys[i]].packageId
+                        rule: questions[keys[i]].rule
                     })
                 }
             }
@@ -25,7 +25,6 @@ const GetAllQuestion = async (req, res, next) => {
     res.status(200).json(JSON.parse(JSON.stringify(questionObject)));
 }
 const GetQuestion = async (req, res, next) => {
-    const userId = req.params.userId;
     const id_question = req.params.id_question;
     const data = await db.ref("question").child(id_question).once("value", snapshot => {
         if (snapshot.val() == null) {
@@ -36,6 +35,7 @@ const GetQuestion = async (req, res, next) => {
             const questionObject = {
                 id:id_question,
                 content: question.content,
+                rule: question.rule,
                 userId:question.userId,
                 packageId:question.packageId
             };
@@ -47,6 +47,7 @@ const CreateQuestion = async (req, res, next) => {
     const data = {
         userId: req.params.userId,
         content: req.body.content,
+        rule: req.body.rule,
         packageId: "null"
     }
     const question = await db.ref("question").push(data);
@@ -54,13 +55,13 @@ const CreateQuestion = async (req, res, next) => {
         id: question.key,
         userId: data.userId,
         content: data.content,
-        packageId: data.packageId,
+        rule: data.rule,
+        packageId: data.packageId
     });
 }
 const EditQuestion = async (req, res, next) => {
-    const userId = req.params.userId;
     const id_question = req.params.id_question;
-    const content = req.body.content;
+    const {content,rule} = req.body;
     let questionObject;
     const data = await db.ref("question").child(id_question).once("value", snapshot => {
         if (snapshot.val() == null) {
@@ -70,6 +71,7 @@ const EditQuestion = async (req, res, next) => {
             const question = snapshot.val();
             questionObject = {
                 content: content,
+                rule:rule,
                 userId:question.userId,
                 packageId:question.packageId
             };
@@ -85,7 +87,6 @@ const EditQuestion = async (req, res, next) => {
     })
 }
 const DeleteQuestion = async (req, res, next) => {
-    const userId = req.params.userId;
     const id_question = req.params.id_question;
     const question = db.ref("question").child(id_question).remove((err)=>{
         if(err){
@@ -108,6 +109,7 @@ const ChooseQuestionInPackage = async (req, res, next) => {
             const question = snapshot.val();
             questionObject = {
                 content: question.content,
+                rule: question.rule,
                 userId:userId,
                 packageId:"null"
             };
@@ -117,6 +119,7 @@ const ChooseQuestionInPackage = async (req, res, next) => {
     res.status(200).json({ 
         id: question.key,
         userId: userId,
+        rule: questionObject.rule,
         content: questionObject.content,
         packageId: questionObject.packageId,
     });
@@ -149,8 +152,31 @@ const GetPackageInstalled = async (req, res, next) => {
             }
         }
     })
-    console.log(packageObject);
     res.status(200).json(JSON.parse(JSON.stringify(packageObject)));
 }
+const GetAllQuestionFocusRule = async (req, res, next) => {
+    const {userId,rule} = req.params;
+    let questionObject = [];
+    const data = await db.ref("question").once("value", snapshot => {
+        if (snapshot.val() == null) {
+            res.status(404).json({ message: "null" });
+        }
+        else {
+            const questions = snapshot.val();
+            const keys = Object.keys(questions);
+            for (let i = 0; i < keys.length; i++) {
+                if (questions[keys[i]].userId === userId && questions[keys[i]].packageId === "null" && questions[keys[i]].rule === rule) {
+                    questionObject.push({
+                        id: keys[i],
+                        content: questions[keys[i]].content,
+                        userId: questions[keys[i]].userId,
+                        rule: questions[keys[i]].rule
+                    })
+                }
+            }
+        }
+    })
+    res.status(200).json(JSON.parse(JSON.stringify(questionObject)));
+}
 
-module.exports = { GetAllQuestion, CreateQuestion, DeleteQuestion, GetQuestion, EditQuestion,ChooseQuestionInPackage,InstallPackage,GetPackageInstalled }
+module.exports = { GetAllQuestion, CreateQuestion, DeleteQuestion, GetQuestion, EditQuestion,ChooseQuestionInPackage,InstallPackage,GetPackageInstalled,GetAllQuestionFocusRule }
