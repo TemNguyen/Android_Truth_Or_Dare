@@ -11,10 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.CustomActionBarBinding;
 import com.jthanh.truthordare.databinding.FragmentLibraryQuestionBinding;
 import com.jthanh.truthordare.model.entities.QuestionPackage;
+import com.jthanh.truthordare.model.rooms.AppDatabase;
+import com.jthanh.truthordare.model.rooms.QuestionPackageDao;
 import com.jthanh.truthordare.viewmodel.LibraryQuestionAdapter;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class LibraryQuestionFragment extends Fragment {
     private ArrayList<QuestionPackage> questionPackages;
     private LibraryQuestionAdapter adapter;
 
+    private AppDatabase appDatabase;
+    private QuestionPackageDao questionPackageDao;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +40,10 @@ public class LibraryQuestionFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+        appDatabase = AppDatabase.getInstance(getContext());
+        questionPackageDao = appDatabase.questionPackageDao();
+
         actionBarBinding.tvTitle.setText("Gói câu hỏi có sẵn");
         actionBarBinding.btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,10 +53,8 @@ public class LibraryQuestionFragment extends Fragment {
         });
 
         questionPackages = new ArrayList<>();
-        questionPackages.add(new QuestionPackage("1", "Gói 1"));
-        questionPackages.add(new QuestionPackage("2", "Gói 2"));
-
-        adapter = new LibraryQuestionAdapter(questionPackages);
+        questionPackages.addAll(questionPackageDao.getAllQuestionPackage());
+        adapter = new LibraryQuestionAdapter(questionPackages, getActivity());
         binding.rvQuestion.setAdapter(adapter);
     }
 

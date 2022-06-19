@@ -107,7 +107,7 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                     bundle.putSerializable("type", "Thật");
                     Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);
                 } else {
-                    showMessage("Không có câu hỏi thật nào :(", false);
+                    showMessage("Không có câu hỏi thật nào :(", "sad");
                 }
             }
         });
@@ -123,13 +123,13 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.SliderView
                     bundle.putSerializable("type", "Thách");
                     Navigation.findNavController(holder.itemView).navigate(R.id.gameDetailFragment, bundle);
                 } else {
-                    showMessage("Không có câu hỏi thách nào :(", false);
+                    showMessage("Không có câu hỏi thách nào :(", "sad");
                 }
             }
         });
     }
 
-    private void showMessage(String msg, boolean state) {
+    private void showMessage(String msg, String state) {
         notificationDialog.startDialog(msg, state);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

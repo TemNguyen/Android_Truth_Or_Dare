@@ -2,6 +2,7 @@ package com.jthanh.truthordare.model.retrofits;
 
 import com.jthanh.truthordare.model.entities.Question;
 import com.jthanh.truthordare.model.entities.QuestionPackage;
+import com.jthanh.truthordare.model.entities.UserPackage;
 
 import java.util.List;
 
@@ -22,4 +23,10 @@ public interface RetrofitService {
 
     @GET("/package/{packageId}/question/")
     Single<List<Question>> getAllQuestionByPackageId(@Path("packageId") String packageId);
+
+    @POST("/user/{userId}/package/{packageId}")
+    Single<String> registerQuestionPackage(@Path("userId") String userId, @Path("packageId") String packageId);
+
+    @GET("/user/{userId}/packageinstalled")
+    Single<List<UserPackage>> getRegisteredQuestionPackage(@Path("userId") String userId);
 }

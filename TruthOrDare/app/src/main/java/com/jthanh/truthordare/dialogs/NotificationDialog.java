@@ -19,7 +19,7 @@ public class NotificationDialog {
         this.activity = activity;
     }
 
-    public void startDialog(String msg, boolean state) {
+    public void startDialog(String msg, String icon) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
         View view = inflater.inflate(R.layout.custom_message_dialog, null);
@@ -28,11 +28,19 @@ public class NotificationDialog {
         messageText.setText(msg);
 
         messageImage = (ImageView) view.findViewById(R.id.messageImage);
-        if (state) {
-            messageImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_baseline_check_24));
-        } else {
-            messageImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_baseline_clear_24));
+
+        switch (icon) {
+            case "yes":
+                messageImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_baseline_check_24));
+                break;
+            case "no":
+                messageImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_baseline_clear_24));
+                break;
+            case "sad":
+                messageImage.setImageDrawable(activity.getResources().getDrawable(R.drawable.ic_sad));
         }
+
+
 
         builder.setView(view);
         builder.setCancelable(false);
