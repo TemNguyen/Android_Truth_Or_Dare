@@ -16,12 +16,27 @@ public class Question implements Serializable {
     private String id;
     @SerializedName("content")
     private String content;
+    @SerializedName("rule")
+    private String rule;
+    @SerializedName("packageId")
+    private String packageId;
 
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id='" + id + '\'' +
+                ", content='" + content + '\'' +
+                ", rule='" + rule + '\'' +
+                ", packageId='" + packageId + '\'' +
+                '}';
+    }
+
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -29,26 +44,16 @@ public class Question implements Serializable {
         return content;
     }
 
-    @Override
-    public String toString() {
-        return "Question{" +
-                "id='" + id + '\'' +
-                ", content='" + content + '\'' +
-                ", userId='" + userId + '\'' +
-                ", packageId='" + packageId + '\'' +
-                '}';
-    }
-
     public void setContent(String content) {
         this.content = content;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getRule() {
+        return rule;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setRule(String rule) {
+        this.rule = rule;
     }
 
     public String getPackageId() {
@@ -58,9 +63,4 @@ public class Question implements Serializable {
     public void setPackageId(String packageId) {
         this.packageId = packageId;
     }
-
-    @SerializedName("userId")
-    String userId;
-    @SerializedName("packageId")
-    String packageId;
 }

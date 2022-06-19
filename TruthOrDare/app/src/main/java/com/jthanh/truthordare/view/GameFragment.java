@@ -53,7 +53,7 @@ public class GameFragment extends Fragment {
         }
 
         length = players.size();
-        binding.vpSlider.setAdapter(new SliderAdapter(players, binding.vpSlider, packageSelected));
+        binding.vpSlider.setAdapter(new SliderAdapter(players, binding.vpSlider, packageSelected, getActivity()));
         binding.vpSlider.setClipToPadding(false);
         binding.vpSlider.setClipChildren(false);
         binding.vpSlider.setOffscreenPageLimit(3);
