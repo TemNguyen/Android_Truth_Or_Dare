@@ -34,6 +34,7 @@ public class GameFragment extends Fragment {
     private int times = 3; // Số vòng quay qua vị trí cần chọn
     private int selected = 0; // Số thứ tự của item cần chọn
     private int length = 0; // Độ dài ban đầu của mảng item
+    private int lastNumber = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,11 @@ public class GameFragment extends Fragment {
             public void onClick(View view) {
                 // handle random selected player
                 random = new Random();
-                selected = random.nextInt(length);
+                do {
+                    selected = random.nextInt(length);
+                } while (selected == lastNumber);
+                lastNumber = selected;
+                times = random.nextInt(5 - 2) + 2;
                 // handle spin
                 binding.clMain.setVisibility(View.GONE);
                 sliderHandler.postDelayed(sliderRunnable, 100);

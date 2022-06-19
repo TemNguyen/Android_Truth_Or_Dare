@@ -85,39 +85,13 @@ public class ChooseQuestion extends Fragment {
         packageSelected = new ArrayList<>();
         packageSelects = new ArrayList<>();
         selectedPackageId = new ArrayList<>();
+        int index = 0;
         // handle here
-        for (int i = 0; i < questionPackageDao.getQuestionPackageCount(); i++) {
-            QuestionPackage questionPackage = questionPackageDao.getAllQuestionPackage().get(i);
-            packageSelects.add(new PackageSelect(i, questionPackage));
-            List<Question> questionInPackage = questionDao.getQuestionByPackageId(questionPackage.getId());
-            if (questionInPackage.size() == 0) {
-                loadingDialog.startDialog("Đang tải dữ liệu...");
-                util.getAllQuestionByPackageId(questionPackage.getId())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<List<Question>>() {
-                            @Override
-                            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Question> questions) {
-                                if (questions.size() != 0) {
-                                    for (Question question:
-                                         questions) {
-                                        questionDao.insertAllQuestion(question);
-                                    }
-                                } else {
-                                    notificationDialog = new NotificationDialog(getActivity());
-                                    showMessage("Có lỗi xảy ra.", false);
-                                    Navigation.findNavController(view).navigate(R.id.addPlayerFragment);
-                                }
-                            }
-
-                            @Override
-                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                                notificationDialog = new NotificationDialog(getActivity());
-                                showMessage("Có lỗi xảy ra", false);
-                                e.printStackTrace();
-                            }
-                        });
-                loadingDialog.dismissDialog();
+        for (QuestionPackage item:
+             questionPackageDao.getAllQuestionPackage()) {
+            if (questionDao.getQuestionByPackageId(item.getId()).size() > 0) {
+                packageSelects.add(new PackageSelect(index, item));
+                index++;
             }
         }
         selectedPackage = new boolean[packageSelects.size()];
@@ -179,14 +153,14 @@ public class ChooseQuestion extends Fragment {
                     Navigation.findNavController(view).navigate(R.id.gameFragment, bundle);
                 } else {
                     notificationDialog = new NotificationDialog(getActivity());
-                    showMessage("Vui lòng chọn gói câu hỏi.", false);
+                    showMessage("Vui lòng chọn gói câu hỏi.", "no");
                 }
 
             }
         });
     }
 
-    private void showMessage(String msg, boolean state) {
+    private void showMessage(String msg, String state) {
         notificationDialog.startDialog(msg, state);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

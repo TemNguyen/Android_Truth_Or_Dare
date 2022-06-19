@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jthanh.truthordare.model.entities.Question;
 import com.jthanh.truthordare.model.entities.QuestionPackage;
+import com.jthanh.truthordare.model.entities.UserPackage;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory;
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Path;
 
 public class RetrofitUtil {
     private static final String BASE_URL = "https://truthordare-game.herokuapp.com/";
@@ -40,5 +42,13 @@ public class RetrofitUtil {
 
     public Single<List<Question>> getAllQuestionByPackageId(String packageId) {
         return service.getAllQuestionByPackageId(packageId);
+    }
+
+    public Single<String> registerQuestionPackage(String userId, String packageId) {
+        return service.registerQuestionPackage(userId, packageId);
+    }
+
+    public Single<List<UserPackage>> getRegisteredQuestionPackage(String userId) {
+        return service.getRegisteredQuestionPackage(userId);
     }
 }

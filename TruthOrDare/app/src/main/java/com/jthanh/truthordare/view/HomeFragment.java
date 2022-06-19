@@ -32,9 +32,11 @@ import com.jthanh.truthordare.R;
 import com.jthanh.truthordare.databinding.FragmentHomeBinding;
 import com.jthanh.truthordare.dialogs.LoadingDialog;
 import com.jthanh.truthordare.dialogs.NotificationDialog;
-import com.jthanh.truthordare.model.entities.QuestionPackage;
+import com.jthanh.truthordare.model.entities.Question;
+import com.jthanh.truthordare.model.entities.UserPackage;
 import com.jthanh.truthordare.model.retrofits.RetrofitUtil;
 import com.jthanh.truthordare.model.rooms.AppDatabase;
+import com.jthanh.truthordare.model.rooms.QuestionDao;
 import com.jthanh.truthordare.model.rooms.QuestionPackageDao;
 
 import java.util.List;
@@ -51,15 +53,15 @@ public class HomeFragment extends Fragment {
 
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth firebaseAuth;
-
-    private RetrofitUtil util;
-    private AppDatabase appDatabase;
-    private QuestionPackageDao questionPackageDao;
+    private FirebaseUser firebaseUser;
 
     private LoadingDialog loadingDialog;
     private NotificationDialog notificationDialog;
 
-    private FirebaseUser firebaseUser;
+    private RetrofitUtil util;
+    private AppDatabase appDatabase;
+    private QuestionPackageDao questionPackageDao;
+    private QuestionDao questionDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,13 +82,14 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        if (firebaseUser != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             logined();
         }
 
         util = RetrofitUtil.getInstance(getContext());
         appDatabase = AppDatabase.getInstance(getContext());
         questionPackageDao = appDatabase.questionPackageDao();
+        questionDao = appDatabase.questionDao();
 
         loadingDialog = new LoadingDialog(getActivity());
         notificationDialog = new NotificationDialog(getActivity());
@@ -102,39 +105,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Navigation.findNavController(view).navigate(R.id.questionFragment);
-//                if (questionPackageDao.getQuestionPackageCount() == 0) {
-//                    loadingDialog.startDialog("Đang tải dữ liệu...");
-//                    util.getAllPackage()
-//                            .subscribeOn(Schedulers.newThread())
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribeWith(new DisposableSingleObserver<List<QuestionPackage>>() {
-//                                @Override
-//                                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
-//                                    loadingDialog.dismissDialog();
-//                                    if (questionPackages.size() != 0) {
-//                                        for (QuestionPackage questionPackage:
-//                                                questionPackages) {
-//                                            questionPackageDao.insertAllQuestionPackage(questionPackage);
-//                                        }
-//                                    } else {
-//                                        notificationDialog = new NotificationDialog(getActivity());
-//                                        showMessage("Không có dữ liệu để hiện thị", false);
-//                                    }
-//                                    Navigation.findNavController(view).navigate(R.id.questionFragment);
-//                                }
-//
-//                                @Override
-//                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-//                                    loadingDialog.dismissDialog();
-//                                    notificationDialog = new NotificationDialog(getActivity());
-//                                    showMessage("Có lỗi xảy ra", false);
-//                                    e.printStackTrace();
-//                                }
-//                            });
-//                } else {
-//                    Navigation.findNavController(view).navigate(R.id.questionFragment);
-//                }
-
             }
         });
 
@@ -155,7 +125,7 @@ public class HomeFragment extends Fragment {
     private void logined() {
         binding.btnLogin.setVisibility(View.INVISIBLE);
         binding.tvName.setVisibility(View.VISIBLE);
-        binding.tvName.setText("Xin chào " + firebaseUser.getDisplayName().split(" ")[0]);
+        binding.tvName.setText("Xin chào " + FirebaseAuth.getInstance().getCurrentUser().getDisplayName().split(" ")[0]);
     }
 
     @Override
@@ -190,15 +160,56 @@ public class HomeFragment extends Fragment {
                         System.out.println(uid + " " + email);
 
                         // check is new user or existing
-                        if (authResult.getAdditionalUserInfo().isNewUser()) {
-                            Log.d(TAG, "New account - add in db");
-                        } else {
-                            Log.d(TAG, "Exist account - pull question");
+                        if (!authResult.getAdditionalUserInfo().isNewUser()) {
+                            loadingDialog.startDialog("Đang đăng nhập...");
+
+                            util.getRegisteredQuestionPackage(uid)
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribeWith(new DisposableSingleObserver<List<UserPackage>>() {
+                                        @Override
+                                        public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<UserPackage> userPackages) {
+                                            if (userPackages.size() > 0) {
+                                                for (UserPackage item:
+                                                     userPackages) {
+                                                    util.getAllQuestionByPackageId(item.getPackageId())
+                                                            .subscribeOn(Schedulers.newThread())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .subscribeWith(new DisposableSingleObserver<List<Question>>() {
+                                                                @Override
+                                                                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<Question> questions) {
+                                                                    if (questions.size() > 0) {
+                                                                        for (Question item:
+                                                                                questions) {
+                                                                            questionDao.insertAllQuestion(item);
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                                                }
+                                                            });
+                                                }
+                                            }
+                                            loadingDialog.dismissDialog();
+                                            logined();
+                                            Navigation.findNavController(getView()).navigate(R.id.homeFragment);
+                                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                        }
+
+                                        @Override
+                                        public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                            Log.d(TAG, "Pull question fail");
+                                            loadingDialog.dismissDialog();
+                                            logined();
+                                            Navigation.findNavController(getView()).navigate(R.id.homeFragment);
+                                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                            fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                        }
+                                    });
                         }
-                        logined();
-                        Navigation.findNavController(getView()).navigate(R.id.homeFragment);
-                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -207,17 +218,6 @@ public class HomeFragment extends Fragment {
                         Log.d(TAG, "Login fail");
                     }
                 });
-    }
-
-    private void showMessage(String msg, boolean state) {
-        notificationDialog.startDialog(msg, state);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                notificationDialog.dismissDialog();
-            }
-        }, 1000);
     }
 
     @Override
