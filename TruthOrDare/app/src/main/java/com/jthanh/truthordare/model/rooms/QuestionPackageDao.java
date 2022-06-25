@@ -21,6 +21,9 @@ public interface QuestionPackageDao {
     @Query("SELECT COUNT(id) FROM QuestionPackage")
     int getQuestionPackageCount();
 
+    @Query("SELECT EXISTS(SELECT * FROM QuestionPackage WHERE id = :id)")
+    boolean isPackageExist(String id);
+
     @Insert
     void insertAllQuestionPackage(QuestionPackage... questionPackages);
 

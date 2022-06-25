@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,6 +116,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Begin sign in");
+                loadingDialog.startDialog("Đang đăng nhập...");
                 try {
                     Intent intent = googleSignInClient.getSignInIntent();
                     startActivityForResult(intent, RQ_SIGN_IN);
@@ -176,8 +176,6 @@ public class HomeFragment extends Fragment {
 
                         // check is new user or existing
                         if (!authResult.getAdditionalUserInfo().isNewUser()) {
-                            loadingDialog.startDialog("Đang đăng nhập...");
-
                             util.getRegisteredQuestionPackage(uid)
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -185,8 +183,29 @@ public class HomeFragment extends Fragment {
                                         @Override
                                         public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<UserPackage> userPackages) {
                                             if (userPackages.size() > 0) {
+                                                util.getAllPackage()
+                                                        .subscribeOn(Schedulers.newThread())
+                                                        .observeOn(AndroidSchedulers.mainThread())
+                                                        .subscribeWith(new DisposableSingleObserver<List<QuestionPackage>>() {
+                                                            @Override
+                                                            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
+                                                                if (questionPackages.size() > 0) {
+                                                                    questionPackageDao.deleteAll();
+                                                                    questionPackageDao.insertAllQuestionPackage(new QuestionPackage("0", "Mặc định"));
+                                                                    for (QuestionPackage item:
+                                                                            questionPackages) {
+                                                                        questionPackageDao.insertAllQuestionPackage(item);
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        });
                                                 for (UserPackage item:
-                                                     userPackages) {
+                                                        userPackages) {
                                                     if (questionDao.getQuestionByPackageId(item.getPackageId()).size() == 0) {
                                                         util.getAllQuestionByPackageId(item.getPackageId())
                                                                 .subscribeOn(Schedulers.newThread())
@@ -209,16 +228,15 @@ public class HomeFragment extends Fragment {
                                                     }
                                                 }
                                             }
-                                            loadingDialog.dismissDialog();
                                         }
 
                                         @Override
                                         public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
                                             Log.d(TAG, "Pull question fail");
-                                            loadingDialog.dismissDialog();
                                         }
                                     });
                         }
+                        loadingDialog.dismissDialog();
                         logined();
                         Navigation.findNavController(getView()).navigate(R.id.homeFragment);
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

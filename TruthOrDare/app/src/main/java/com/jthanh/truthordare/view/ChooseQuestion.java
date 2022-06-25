@@ -86,6 +86,7 @@ public class ChooseQuestion extends Fragment {
         packageSelects = new ArrayList<>();
         selectedPackageId = new ArrayList<>();
         int index = 0;
+        List<QuestionPackage> questionPackageList = questionPackageDao.getAllQuestionPackage();
         // handle here
         for (QuestionPackage item:
              questionPackageDao.getAllQuestionPackage()) {
