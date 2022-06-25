@@ -21,6 +21,9 @@ public interface RetrofitService {
     @GET("/package/")
     Single<List<QuestionPackage>> getAllPackage();
 
+    @GET("/package/{id}")
+    Single<QuestionPackage> getPackageById(@Path("id") String id);
+
     @GET("/package/{packageId}/question/")
     Single<List<Question>> getAllQuestionByPackageId(@Path("packageId") String packageId);
 

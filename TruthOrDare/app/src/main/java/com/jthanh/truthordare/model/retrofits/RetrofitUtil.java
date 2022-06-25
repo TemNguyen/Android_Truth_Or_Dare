@@ -51,4 +51,8 @@ public class RetrofitUtil {
     public Single<List<UserPackage>> getRegisteredQuestionPackage(String userId) {
         return service.getRegisteredQuestionPackage(userId);
     }
+
+    public Single<QuestionPackage> getPackageById(String id) {
+        return service.getPackageById(id);
+    }
 }

@@ -67,33 +67,37 @@ public class QuestionFragment extends Fragment {
         binding.btnLibraryQuestion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadingDialog = new LoadingDialog(getActivity());
-                loadingDialog.startDialog("Vui lòng chờ...");
-                util.getAllPackage()
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<List<QuestionPackage>>() {
-                            @Override
-                            public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
-                                if (questionPackages.size() > 0) {
-                                    questionPackageDao.deleteAll();
-                                    questionPackageDao.insertAllQuestionPackage(new QuestionPackage("0", "Mặc định"));
-                                    for (QuestionPackage item:
-                                         questionPackages) {
-                                        questionPackageDao.insertAllQuestionPackage(item);
+                if (questionPackageDao.getAllQuestionPackage().size() < 2) {
+                    loadingDialog = new LoadingDialog(getActivity());
+                    loadingDialog.startDialog("Vui lòng chờ...");
+                    util.getAllPackage()
+                            .subscribeOn(Schedulers.newThread())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSingleObserver<List<QuestionPackage>>() {
+                                @Override
+                                public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull List<QuestionPackage> questionPackages) {
+                                    if (questionPackages.size() > 0) {
+                                        questionPackageDao.deleteAll();
+                                        questionPackageDao.insertAllQuestionPackage(new QuestionPackage("0", "Mặc định"));
+                                        for (QuestionPackage item:
+                                                questionPackages) {
+                                            questionPackageDao.insertAllQuestionPackage(item);
+                                        }
                                     }
+                                    loadingDialog.dismissDialog();
+                                    Navigation.findNavController(view).navigate(R.id.libraryQuestionFragment);
                                 }
-                                loadingDialog.dismissDialog();
-                                Navigation.findNavController(view).navigate(R.id.libraryQuestionFragment);
-                            }
 
-                            @Override
-                            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                                e.printStackTrace();
-                                loadingDialog.dismissDialog();
-                                Navigation.findNavController(view).navigate(R.id.libraryQuestionFragment);
-                            }
-                        });
+                                @Override
+                                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                                    loadingDialog.dismissDialog();
+                                    Navigation.findNavController(view).navigate(R.id.libraryQuestionFragment);
+                                    e.printStackTrace();
+                                }
+                            });
+                } else {
+                    Navigation.findNavController(view).navigate(R.id.libraryQuestionFragment);
+                }
             }
         });
 
