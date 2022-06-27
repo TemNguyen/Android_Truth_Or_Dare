@@ -7,7 +7,7 @@
 ### Với bộ câu hỏi Thật - Thách phong phú đi kèm với giao diện trực quan, dễ thao tác cùng với tốc độ xử lý nhanh, Truth Or Dare sẽ đem lại những trải nghiệm vui vẻ, hài hước giúp bạn cảm thấy thú vị nhất có thể.
 
 ## Installation
-### [Download]()
+### [Download](https://drive.google.com/file/d/1f07lxWGVwvOiTUxptNEptmEA8hcpwDaq/view?usp=sharing)
 
 ## Usage
 ### Truth or Dare có thể chơi bằng tài khoản khách (Guest) hoặc đăng nhập thông qua tài khoản Google.
